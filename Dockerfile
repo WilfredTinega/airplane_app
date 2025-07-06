@@ -3,16 +3,20 @@ FROM frappe/bench:version-15
 # Set working directory
 WORKDIR /home/frappe
 
-# Init bench (without creating site during build)
+# Initialize bench without creating a site (during build)
 RUN bench init --frappe-branch version-15 frappe-bench
 
+# Move into the bench directory
 WORKDIR /home/frappe/frappe-bench
 
-# Add custom app
+# Get your custom app from GitHub
 RUN bench get-app airplane_mode https://github.com/WilfredTinega/airplane_app
 
-# Add supervisord config
+# Copy supervisor config
 COPY supervisord.conf /etc/supervisord.conf
 
-# Start all services (Redis, MariaDB, Frappe)
+# Expose the dynamic port Render provides (optional)
+EXPOSE $PORT
+
+# Start all services (Redis, MariaDB, site setup, Frappe)
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
