@@ -1,5 +1,6 @@
 {
  "actions": [],
+ "allow_import": 1,
  "allow_rename": 1,
  "autoname": "format:{airline}-{###}",
  "creation": "2025-06-29 16:32:19.209137",
@@ -38,7 +39,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-06-29 16:35:49.235532",
+ "modified": "2025-07-03 17:41:54.827172",
  "modified_by": "Administrator",
  "module": "Airplane Mode",
  "name": "Airplane",

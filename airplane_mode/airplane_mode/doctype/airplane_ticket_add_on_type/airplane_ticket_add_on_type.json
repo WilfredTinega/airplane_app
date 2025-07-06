@@ -1,46 +1,28 @@
 {
  "actions": [],
- "allow_import": 1,
  "allow_rename": 1,
  "autoname": "prompt",
- "creation": "2025-06-29 16:36:55.355951",
+ "creation": "2025-07-03 13:05:31.106818",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "code",
-  "city",
-  "country"
+  "description"
  ],
  "fields": [
   {
-   "fieldname": "code",
+   "description": "Description about the add-on",
+   "fieldname": "description",
    "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "Code",
-   "reqd": 1
-  },
-  {
-   "fieldname": "city",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "City",
-   "reqd": 1
-  },
-  {
-   "fieldname": "country",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "Country",
-   "reqd": 1
+   "label": "Description"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-07-03 17:51:42.577982",
+ "modified": "2025-07-03 13:08:18.206880",
  "modified_by": "Administrator",
  "module": "Airplane Mode",
- "name": "Airport",
+ "name": "Airplane Ticket Add-on Type",
  "naming_rule": "Set by user",
  "owner": "Administrator",
  "permissions": [
