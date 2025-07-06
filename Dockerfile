@@ -13,32 +13,33 @@ RUN apt-get update && apt-get install -y \
     nodejs npm gnupg libffi-dev libssl-dev \
     python3-dev build-essential libjpeg-dev zlib1g-dev libpq-dev \
     liblcms2-dev libblas-dev libatlas-base-dev libreadline-dev \
-    libmysqlclient-dev libxslt1-dev libxml2-dev libwebp-dev && \
+    libmariadb-dev libmariadb-dev-compat libxslt1-dev libxml2-dev libwebp-dev && \
     npm install -g yarn && \
     apt-get clean
 
-# Add a user and switch to it
-RUN useradd -ms /bin/bash frappe && usermod -aG sudo frappe
+# Add user
+RUN useradd -ms /bin/bash frappe
 USER frappe
 WORKDIR /home/frappe
 
 # Install bench CLI
 RUN pip install --user frappe-bench
 
-# Init bench (without site to avoid MariaDB connection issues at build time)
+# Initialize bench (without site setup)
 RUN bench init --frappe-branch version-15 frappe-bench
 
+# Move into bench
 WORKDIR /home/frappe/frappe-bench
 
-# Clone your custom app
+# Add custom app from GitHub
 RUN bench get-app airplane_mode https://github.com/WilfredTinega/airplane_app
 
-# Switch back to root to copy supervisord config
+# Add supervisor config
 USER root
 COPY supervisord.conf /etc/supervisord.conf
 
-# Expose Frappe dev port
+# Expose port
 EXPOSE 8000
 
-# Start supervisord (will start Redis, MariaDB, site setup, and Frappe)
+# Start all services
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
