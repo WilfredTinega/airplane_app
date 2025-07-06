@@ -1,22 +1,41 @@
-FROM frappe/bench:version-15
+# Use Python base image (Bench not prebuilt)
+FROM python:3.10-slim
 
-# Set working directory
+# Set environment variables
+ENV DEBIAN_FRONTEND=noninteractive
+ENV PATH="/home/frappe/.local/bin:$PATH"
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    git curl redis-server mariadb-server \
+    xvfb libfontconfig wkhtmltopdf \
+    libxrender1 libxext6 xfonts-75dpi xfonts-base \
+    nodejs npm supervisor && \
+    npm install -g yarn && \
+    apt-get clean
+
+# Add user
+RUN useradd -ms /bin/bash frappe
+USER frappe
 WORKDIR /home/frappe
 
-# Initialize bench without creating a site (during build)
+# Install bench
+RUN pip install --user frappe-bench
+
+# Init bench and get Frappe app
 RUN bench init --frappe-branch version-15 frappe-bench
 
-# Move into the bench directory
 WORKDIR /home/frappe/frappe-bench
 
-# Get your custom app from GitHub
+# Get your custom app
 RUN bench get-app airplane_mode https://github.com/WilfredTinega/airplane_app
 
-# Copy supervisor config
+# Copy supervisord configuration
+USER root
 COPY supervisord.conf /etc/supervisord.conf
 
-# Expose the dynamic port Render provides (optional)
-EXPOSE $PORT
+# Expose Frappe's default port
+EXPOSE 8000
 
-# Start all services (Redis, MariaDB, site setup, Frappe)
+# Start all services via supervisord
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
