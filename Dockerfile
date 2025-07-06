@@ -1,26 +1,18 @@
-# Use official Frappe image with bench preinstalled
 FROM frappe/bench:version-15
 
 # Set working directory
 WORKDIR /home/frappe
 
-# Initialize a new bench environment
+# Init bench (without creating site during build)
 RUN bench init --frappe-branch version-15 frappe-bench
 
-# Change to bench directory
 WORKDIR /home/frappe/frappe-bench
 
-# Clone your app from GitHub
+# Add custom app
 RUN bench get-app airplane_mode https://github.com/WilfredTinega/airplane_app
 
-# Create a new site
-RUN bench new-site airplane.local --admin-password admin --db-root-password root
+# Add supervisord config
+COPY supervisord.conf /etc/supervisord.conf
 
-# Install your app on the site
-RUN bench --site airplane.local install-app airplane_mode
-
-# Expose the default port
-EXPOSE 8000
-
-# Start the Frappe development server
-CMD ["bench", "serve", "--port", "8000", "--site", "airplane.local"]
+# Start all services (Redis, MariaDB, Frappe)
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
